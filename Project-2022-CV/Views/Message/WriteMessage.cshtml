@@ -1,0 +1,119 @@
+﻿@model Project_2022_CV.Models.MessageModel
+
+@{
+    ViewBag.Title = "WriteMessage";
+}
+
+<div class="@*container body-content*@" style="margin:auto; width: 70%;">
+
+    <h2 style="text-align:center; margin-top:20px">Send a message</h2>
+
+
+    @using (Html.BeginForm("signup"))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="test" style="padding-left: 100px">
+
+            <div class="form-horizontal">
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.ReceiverId, "", new { @class = "text-danger" })
+
+
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Author, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(x => x.Author, new { id = "authorinfo", @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                }
+
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(x => x.Title, new { id = "titleinfo", @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(x => x.Email, new { id = "emailinfo", @class = "form-control" })
+
+                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextAreaFor(x => x.Text, new { id = "textinfo", @class = "form-control" })
+
+                        @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <button id="btnAddMessage" style=" display: flex; margin: auto; margin-top: 20px;" type="submit" class="btn btn-primary">Send</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    }
+</div>
+
+<style>
+    textarea {
+        width: 100%;
+    }
+</style>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btnAddMessage").click(function () {
+                var value = $('#authorinfo').val();
+
+                var message = {};
+                if (value == null) {
+                    message.Author = "wtfman";
+                }
+                else {
+                    message.Author = $('#authorinfo').val();
+                }
+                message.Title = $('#titleinfo').val();
+                message.Text = $('#textinfo').val();
+                message.Email = $('#emailinfo').val();
+                message.AuthorEmail = "yooo";
+                console.log(message);
+
+                $.ajax({
+                    url: "/api/messagemodels",
+                    method: "post",
+                    data: message,
+
+                })
+                    .done(function () {
+                        console.log("Succefully");
+                    }).fail(function () {
+                        console.log("Failed to Add CV.");
+                    });
+
+
+            });
+        });
+    </script>
+
+}

@@ -1,0 +1,64 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+@model Project_2022_CV.ViewModel.UserProjectCvViewModel
+
+
+
+
+<div class="container col-xxl-8 px-4 py-5 mt-5">
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+        <div class="col-10 col-sm-8 col-lg-6">
+            <img src="@Model.latestProject.GetProjectImage()" class="d-block mx-lg-auto img-fluid" style="border-radius: 0.5rem" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+        </div>
+        <div class="col-lg-6">
+            <h1 class="display-5 fw-bold lh-1 mb-3">@Model.latestProject.Title</h1>
+            <p class="lead">@Model.latestProject.Description</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <a href="/Project/ProjectPage?id=@Model.latestProject.Id.ToString()" class="btn btn-primary btn-lg px-4 me-md-2">Read More</a>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Top three popular CVs *@
+<div class="container mt-5 mb-5">
+
+    <h1 class="text-center fw-bold mt-5 mb-5">The Cvs that are most viewed by our users!</h1>
+    @* Rendra automagiskt de tre CV med mest clicks som är publika.*@
+    <div class="row">
+        <div class="col-sm">
+            <div class="card text-center" style="width: 18rem;">
+                <img src="@Model.Users[1].GetProfileImage()" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Users[1].Cv.Title</h5>
+                    <p class="card-text">@Model.Users[1].Cv.Description</p>
+                    <a href="/CV/CV_Single?id=@Model.Users[1].Cv.id.ToString()" class="btn btn-primary">Read More</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="card text-center" style="width: 18rem; transform: scale(1.1);">
+                <img src="@Model.Users[0].GetProfileImage()" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Users[0].Cv.Title</h5>
+                    <p class="card-text">@Model.Users[0].Cv.Description</p>
+                    <a href="/CV/CV_Single?id=@Model.Users[0].Cv.id.ToString()" class="btn btn-primary">Read More</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="card text-center" style="width: 18rem;">
+                <img src="@Model.Users[2].GetProfileImage()" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Users[2].Cv.Title</h5>
+                    <p class="card-text">@Model.Users[2].Cv.Description</p>
+                    <a href="/CV/CV_Single?id=@Model.Users[2].Cv.id.ToString()" class="btn btn-primary">Read More</a>
+                </div>
+            </div>
+        </div>  
+    </div>
+</div>
+
+

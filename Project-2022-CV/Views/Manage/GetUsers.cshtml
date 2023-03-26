@@ -1,0 +1,175 @@
+﻿@using PagedList;
+@using Microsoft.AspNet.Identity;
+@using PagedList.Mvc;
+
+@model IPagedList<Project_2022_CV.Models.ApplicationUser>
+<link href="~/Content/PagedList.css"
+      rel="stylesheet" />
+
+@{
+    ViewBag.Title = "Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 style="text-align:center; padding-top:10px;" class="box-title">
+            <b>Search for users</b>
+        </h3>
+    </div>
+
+    @using (Html.BeginForm("GetUsers", "Manage", FormMethod.Get))
+    {
+
+
+    }
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
+<div class="container mt-3 mb-4">
+    <div style="width:100%" class="col-lg-9 mt-4 mt-lg-0">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="user-dashboard-info-box table-responsive mb-0 bg-white p-4 shadow-sm">
+                    <table class="table manage-candidates-top mb-0">
+                        <thead>
+                            <tr>
+                                <th>Candidate Name</th>
+                                <th class="text-center">Private</th>
+                            </tr>
+                        </thead>
+
+                        @if (@User.Identity.IsAuthenticated)
+                        {
+                            <tbody>
+
+                                @if (Model.Count() == 0)
+                                {
+                                    <tr>
+                                        <td colspan="3"> Records not found </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    foreach (var user in Model)
+                                    {
+                                        if (user.Active && User.Identity.GetUserName() != user.Email)
+                                        {
+                                            <tr class="candidates-list">
+
+                                                <td class="title">
+                                                    <div class="thumb">
+                                                        <img class="img-fluid" src="@user.GetProfileImage()" alt="">
+                                                    </div>
+                                                    <div class="candidate-list-details">
+                                                        <div class="candidate-list-info">
+                                                            <div class="candidate-list-title">
+                                                                <h5 class="mb-0"><a href="@Url.Action("CV_Single", "Cv", new { id = user.Cv.id })">@user.Name</a></h5>
+                                                            </div>
+                                                            <div class="candidate-list-option">
+                                                                <ul class="list-unstyled">
+                                                                    <li><i class="fas fa-envelope"></i> @user.Email</li>
+                                                                    <li><i class="fas fa-map-marker-alt pr-1"></i> @user.Adress</li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="candidate-list-favourite-time text-center">
+                                                    <a class="candidate-list-favourite order-2 text-danger" href="#"></a>
+                                                    <span class="candidate-list-time order-1">@user.Private</span>
+                                                </td>
+                                                <td>
+                                                    <ul class="list-unstyled mb-0 d-flex justify-content-end">
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                    }
+
+                                }
+                            </tbody>
+                        }
+
+                        else
+                        {
+                            <tbody>
+
+                                @if (Model.Count() == 0)
+                                {
+                                    <tr>
+                                        <td colspan="3"> Records not found </td>
+                                    </tr>
+                                }
+
+                                else
+                                {
+                                    foreach (var user in Model)
+                                    {
+                                        if (user.Private == false && user.Active)
+                                        {
+                                            <tr class="candidates-list">
+
+                                                <td class="title">
+                                                    <div class="thumb">
+                                                        <img class="img-fluid" src="@user.GetProfileImage()" alt="">
+                                                    </div>
+                                                    <div class="candidate-list-details">
+                                                        <div class="candidate-list-info">
+                                                            <div class="candidate-list-title">
+                                                                <h5 class="mb-0"><a href="@Url.Action("CV_Single", "Cv", new { id = user.Cv.id })">@user.Name</a></h5>
+                                                            </div>
+                                                            <div class="candidate-list-option">
+                                                                <ul class="list-unstyled">
+                                                                    <li><i class="fas fa-envelope"></i> @user.Email</li>
+                                                                    <li><i class="fas fa-map-marker-alt pr-1"></i> @user.Adress</li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="candidate-list-favourite-time text-center">
+                                                    <a class="candidate-list-favourite order-2 text-danger" href="#"></a>
+                                                    <span class="candidate-list-time order-1">@user.Private</span>
+                                                </td>
+                                                <td>
+                                                    <ul class="list-unstyled mb-0 d-flex justify-content-end">
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                    }
+                                }
+                            </tbody>
+                        }
+                    </table>
+
+                    @Html.PagedListPager(Model, pageNumber => Url.Action("GetUsers", new
+                    {
+                pageNumber,
+                option = Request.QueryString["option"],
+                search = Request.QueryString["search"]
+                }))
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $(function () {
+            $('#UsersWithRoles').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true
+            });
+        });
+    </script>
+}

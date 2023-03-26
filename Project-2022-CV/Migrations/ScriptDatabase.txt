@@ -1,0 +1,27 @@
+﻿insert into Images values('Tjenare', 'hejsansvejsan hjhkhdjkhjkpooaoj');
+insert into Images values('Sommar', 'hejsansvejsan hjhkhdjkhjkpooaoj');
+insert into Images values('Vinter', 'hejsansvejsan hjhkhdjkhjkpooaoj');
+
+insert into Cvs values('Google','Jobbade stenhårt med att lyckas inom Googlebalkalaba', '2021-01-01', 10,0);
+insert into Cvs values('Apple','Jobbade stenhårt med att lyckas inom Googlebalkalaba', '2021-10-01', 15,0);
+insert into Cvs values('Samsung','Jobbade stenhårt med att lyckas inom Googlebalkalaba', '2021-05-01', 20,0);
+
+insert into Projects values('Mobilapp', 'Vi utvecklade en ai som kunde prata med hundar.', '2021-12-10', 1)
+insert into Projects values('Datorapp', 'Vi utvecklade en ai som kunde prata med hundar.', '2021-12-10', 1)
+insert into Projects values('Gamingspel', 'Vi utvecklade en ai som kunde prata med hundar.', '2021-12-10', 1)
+
+insert into Users values('Manne', 'Åstadalsvägen 5b', 'Manne Fornander', 'manne98@hotmail.se', 'www.manne.se', '076453621',0,1,1,1 )
+insert into Users values('Manne', 'Åstadalsvägen 5b', 'Manne Fornander', 'manne98@hotmail.se', 'www.manne.se', '076453621',0,1,2,2 )
+insert into Users values('Manne', 'Åstadalsvägen 5b', 'Manne Fornander', 'manne98@hotmail.se', 'www.manne.se', '076453621',0,1,3,2 )
+
+insert into User_Education values('Harvard', 'University', '2000-05-06', '2005-05-06', 'Studying lawinforcement', 1)
+insert into User_Education values('Harvard', 'University', '2000-05-06', '2005-05-06', 'Studying lawinforcement', 2)
+insert into User_Education values('Stanford', 'University', '2000-05-06', '2005-05-06', 'Studying lawinforcement', 3)
+
+insert into User_WorkExperience values('Hard work', 'Bacho', '2004-02-03', '2007-06-07', 'Was taking out the shit', 1)
+insert into User_WorkExperience values('Hard work', 'Bacho', '2004-02-03', '2007-06-07', 'Was taking out the shit', 2)
+insert into User_WorkExperience values('Hard work', 'Bacho', '2004-02-03', '2007-06-07', 'Was taking out the shit', 3)
+
+insert into UserProjects values(1,1)
+insert into UserProjects values(2,1)
+insert into UserProjects values(3,1)

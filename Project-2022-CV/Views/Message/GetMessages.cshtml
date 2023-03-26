@@ -1,0 +1,19 @@
+﻿@if (User.Identity.IsAuthenticated)
+{
+    <li>
+        <a href="/Message/MessagesIndexPage" class="nav-link px-2 text-white">
+            Inbox
+        </a>
+    </li>
+
+
+    if (Model != 0)
+    {
+
+        <li>
+            <span class=" translate-middle badge rounded-pill bg-danger">
+                @Model
+            </span>
+        </li>
+    }
+}

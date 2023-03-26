@@ -1,0 +1,162 @@
+﻿@{
+    ViewBag.Title = "ProjectPage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model Project_2022_CV.ViewModel.ProjectUserCreatorViewModel
+
+<div class="text-center">
+    <h2>@Model.project.Title</h2>
+</div>
+
+@{
+    if (Model.Currentuser.Id == Model.project.UserCreatorId)
+    {
+        <div style="padding: 15px; display: flex; margin: auto; justify-content: center; align-items: flex-end;">
+            <button type="button" class="btn btn-outline-info float-end" onclick="window.location='/Project/EditProject?id=@Model.project.Id';">Edit Project</button>
+        </div>
+    }
+    if (User.Identity.IsAuthenticated)
+
+    {
+        var isInProject = false;
+        foreach (var user in Model.project.InvolvedUsers)
+        {
+            if (user.Id == Model.Currentuser.Id)
+            {
+                isInProject = true;
+            }
+        }
+        if (!isInProject)
+        {
+
+            <div style="padding: 15px; display: flex; margin: auto; justify-content: center; align-items: flex-end;">
+                <button type="submit" class="btn btn-outline-primary float-end" id="Joinbtn">Join Project</button>
+            </div>
+        }
+    }
+    
+
+}
+
+
+
+<div class="text-center" style="display: flex; justify-content: center; align-items: center; ">
+    <img src="@Model.project.GetProjectImage()" class="img-fluid" alt="...">
+</div>
+
+<div class="text-center">
+    <p>@Model.project.Description</p>
+</div>
+
+
+
+
+@if (Model.creator.Active)
+{
+    <div class="col d-flex justify-content-center">
+        <div class="card text-center" style="width: 18rem;">
+            <img src="@Model.creator.GetProfileImage()" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">@Model.creator.Name</h5>
+                <p class="card-text">Was the leader of this project</p>
+                <a href="/CV/CV_Single?id=@Model.creator.Cv.id.ToString()" class="btn btn-primary">View Profile</a>
+            </div>
+        </div>
+    </div>
+}
+
+
+<div class="container">
+    <div class="col d-flex justify-content-center">
+        @foreach (var user in Model.project.InvolvedUsers)
+        {
+
+
+            if (User.Identity.IsAuthenticated)
+            {
+
+                if (user.Active)
+                {
+                    <div class="card" style="width: 18rem; margin: 1.5rem;">
+                        <img src="@user.GetProfileImage()" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">@user.Name</h5>
+                            <a href="/CV/CV_Single?id=@user.Cv.id.ToString()" class="btn btn-primary">View Profile</a>
+                            <p class="card-text">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"</p>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                if (user.Active && user.Private==false)
+                {
+                    <div class="card" style="width: 18rem; margin: 1.5rem;">
+                        <img src="@user.GetProfileImage()" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">@user.Name</h5>
+                            <a href="/CV/CV_Single?id=@user.Cv.id.ToString()" class="btn btn-primary">View Profile</a>
+                            <p class="card-text">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"</p>
+                        </div>
+                    </div>
+                }
+            }
+
+
+        }
+
+    </div>
+</div>
+
+
+
+
+
+
+
+@section scripts
+{
+
+    <script>
+        $(document).ready(function() {
+
+
+            $("#Joinbtn").click(function() {
+
+                $.ajax({
+                        url: "/Api/Project?id=@Model.project.Id&userId=@Model.Currentuser.Id",
+                        method: "put",
+
+                    })
+                    .done(function () {
+                        console.log("Succefully");
+                        alert("Successfully joined project!");
+                        location.reload();
+                    }).fail(function () {
+                        console.log("Failed to joined CV.");
+                    });
+
+            });
+
+
+
+        });
+
+
+
+
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

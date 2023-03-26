@@ -1,0 +1,123 @@
+﻿@model Project_2022_CV.ViewModel.MessageViewModel
+
+@{
+    ViewBag.Title = "WriteMessage";
+}
+
+<div class="@*container body-content*@" style="margin:auto; width: 70%;">
+
+    <h2 style="text-align:center; margin-top:20px">Send a message</h2>
+
+
+    @using (Html.BeginForm("signup"))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="test" style="padding-left: 100px">
+
+            <div class="form-horizontal">
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.messageModel.ReceiverId, "", new { @class = "text-danger" })
+
+
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.messageModel.Author, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(x => x.messageModel.Author, new { id = "authorinfo", @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.messageModel.Author, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                }
+
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.messageModel.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(x => x.messageModel.Title, new { id = "titleinfo", @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.messageModel.Title, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.messageModel.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(x => x.applicationUser.Email, new { id = "emailinfo", @class = "form-control" })
+
+                        @Html.ValidationMessageFor(model => model.messageModel.Email, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.messageModel.Text, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextAreaFor(x => x.messageModel.Text, new { id = "textinfo", @class = "form-control" })
+
+                        @Html.ValidationMessageFor(model => model.messageModel.Text, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <button id="btnAddMessage" style=" display: flex; margin: auto; margin-top: 20px;" type="submit" class="btn btn-primary">Send</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    }
+</div>
+
+<style>
+    textarea {
+        width: 100%;
+    }
+</style>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btnAddMessage").click(function () {
+                console.log("hello world");
+
+                var value = $('#authorinfo').val();
+
+                var message = {};
+
+                if (value == null) {
+                    message.Author = "wtfman";
+                }
+                else {
+                    message.Author = $('#authorinfo').val();
+                }
+                message.Title = $('#titleinfo').val();
+                message.Text = $('#textinfo').val();
+                message.Email = $('#emailinfo').val();
+                message.AuthorEmail = "yooo";
+                console.log(message);
+
+                $.ajax({
+                    url: "/api/messagemodels",
+                    method: "post",
+                    data: message
+
+                })
+                    .done(function () {
+                        window.alert("You have succesfully sent the message.");
+                    }).fail(function () {
+                        window.alert("Failed to Add Message. Please try again!");
+                    });
+
+
+            });
+        });
+    </script>
+
+}

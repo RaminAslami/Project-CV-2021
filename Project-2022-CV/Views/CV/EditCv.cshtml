@@ -1,0 +1,464 @@
+﻿
+@{
+    ViewBag.Title = "EditCv";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model Project_2022_CV.ViewModel.UserIDViewModel
+<div class="container-md">
+    <h1 class="text-center mt-5 mb-5">Manage CV</h1>
+    <form class="needs-validation" id="addcv" name="cv">
+        <div class="form-group">
+            <label for="exampleFormControlInput1">Title</label>
+            <input class="form-control" id="CvTitle" name="titlecv" placeholder="Your Cv Title here">
+
+        </div>
+
+
+
+        <div class="form-group">
+            <label for="exampleFormControlTextarea1">Description</label>
+            <textarea class="form-control" id="CVDesc" name="desccv" rows="6" placeholder="Your Cv description here"></textarea>
+        </div>
+
+
+
+        <div class="mt-3">
+            <h3 class="text-center mb-3">Do you have any experiences? Add them here!</h3>
+            <div class="input-group mb-3">
+
+
+                <select class="form-select" id="Experience" aria-label="Default select example">
+                    <option selected>Jobb experience</option>
+                    <option value="1">Education</option>
+                </select>
+            </div>
+
+            <div id="exNameValidation"></div>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Name" id="ExName" aria-label="Recipient's username" aria-describedby="basic-addon2">
+            </div>
+            <div id="exLocationValidation"></div>
+
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Location" id="ExLocation" aria-describedby="basic-addon3">
+            </div>
+            <div id="Date"></div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">StartYear</span>
+                <input type="text" class="form-control" placeholder="XXXX" id="ExStartYear" aria-label="Username" maxlength="4">
+                <span class="input-group-text">EndYear</span>
+                <input type="text" class="form-control" placeholder="XXXX" id="ExEndYear" aria-label="Server" maxlength="4">
+
+            </div>
+            <div id="exDescValidation"></div>
+
+            <div class="form-group">
+                <textarea class="form-control mb-3" rows="3" id="ExDesc" placeholder="Description"></textarea>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button class="btn btn-secondary me-md-2 btn-lg" id="btn-add-experience" type="button">Add</button>
+            </div>
+
+        </div>
+        <div id="AddExperience">
+
+        </div>
+
+
+
+        <h3 class="text-center mt-3 mb-3"> Add your skills aswell!</h3>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Name of Your skill" aria-label="Recipient's username" aria-describedby="basic-addon2" id="skillname">
+        </div>
+        <div id="skillnamediv"></div>
+        <div class="input-group mb-3">
+            <label for="customRange1" class="form-label">Your Skilllevel</label>
+            <input type="range" min="0" max="100" value="50" class="form-range" id="skillrange">
+        </div>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button class="btn btn-secondary me-md-2 btn-lg" id="btn-add-skill" type="button">Add</button>
+        </div>
+
+        <div id="AddSkill">
+
+        </div>
+        <div class="d-grid gap-2 mt-5">
+            <button class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+
+</div>
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+
+            var vm = {
+
+                "SkillList": [],
+                "Clicks": 0,
+                "Deactivated": false,
+                "Educations": [],
+                "WorkExperiences": []
+
+            };
+
+
+            exObj = {
+                "WorkExperiences": [],
+                "Educations": [],
+                "SkillList": []
+            };
+            $.get("/api/Cv?id=@Model.CvId",
+                function (data) {
+                    if (Object.keys(data).length !== 0) {
+                        vm = data;
+                        console.log(vm);
+                        $("#CvTitle").val(data.Title);
+                        $("#CVDesc").val(data.Description);
+                        for (var i = 0; i < data.Educations.$values.length; i++) {
+                            $("#AddExperience").append("<div id='ExE" + data.Educations.$values[i].Id + "'class='card mt-5'><div class='card-header row' style='--bs-gutter-x:0;'><div class='col'>Education</div><div class='col text-end' style='padding-right: 0'><button type='button' class='btn-close Ex' style='padding-right: 0' aria-label='Close'></button></div></div><div class='card-body'><h5 class='card-title'> " + data.Educations.$values[i].Title + "/" + data.Educations.$values[i].WorkPlace + "  " + data.Educations.$values[i].StartYear + "-" + data.Educations.$values[i].EndYear + "</h5><p class='card-text'>" + data.Educations.$values[i].WorkDescription + "</p>  </div></div>");
+
+
+                        }
+                        for (var i = 0; i < data.WorkExperiences.$values.length; i++) {
+                            $("#AddExperience").append("<div id='ExW" + data.WorkExperiences.$values[i].Id + "'class='card mt-5'><div class='card-header row' style='--bs-gutter-x:0;'><div class='col'>Jobb experience</div><div class='col text-end' style='padding-right: 0'><button type='button' class='btn-close Ex' style='padding-right: 0' aria-label='Close'></button></div></div><div class='card-body'><h5 class='card-title'> " + data.WorkExperiences.$values[i].Title + "/" + data.WorkExperiences.$values[i].WorkPlace + "  " + data.WorkExperiences.$values[i].StartYear + "-" + data.WorkExperiences.$values[i].EndYear + "</h5><p class='card-text'>" + data.WorkExperiences.$values[i].WorkDescription + "</p>  </div></div>");
+
+
+                        }
+                        for (var i = 0; i < data.SkillList.$values.length; i++) {
+                            $("#AddSkill").append(" <div id='Skill" + data.SkillList.$values[i].Id + "'class='card mt-5'><div class='card-header row' style='--bs-gutter-x:0;'><div class='col'>Skill</div><div class='col text-end' style='padding-right: 0'><button type='button' class='btn-close skill' style='padding-right: 0' aria-label='Close'></button></div></div><div class='card-body'><h5 class='card-title'>" + data.SkillList.$values[i].SkillName + "</h5><div class='progress mb-4 row' style='height:25px;'><div class='progress-bar bg-primary text-left pl-2' role='progressbar' style='width:" + data.SkillList.$values[i].SkillValue + "%; padding:0' aria-valuenow='80' aria-valuemin='0' aria-valuemax='100'></div></div></div></div>");
+
+
+                        }
+
+                    }
+                });
+            var counterSkill = 0;
+            var counterExperiences = 0;
+
+
+
+
+            $("#btn-add-skill").click(function (e) {
+
+                var Skillname = $("#skillname").val();
+                if (Skillname != "") {
+
+                    $("#Skillname-error").remove();
+
+                    var slider = document.getElementById('skillrange');
+                    var Skillrange = slider.value;
+                    var name = Skillname;
+                    var range = Skillrange;
+                    var skillobject =
+                    {
+                        "SkillName": Skillname,
+                        "SkillValue": range
+                    }
+                    exObj.SkillList.push(skillobject);
+
+                    $("#AddSkill").append(" <div id='Skill" + counterSkill + "'class='card mt-5'><div class='card-header row' style='--bs-gutter-x:0;'><div class='col'>Skill</div><div class='col text-end' style='padding-right: 0'><button type='button' class='btn-close skill' style='padding-right: 0' aria-label='Close'></button></div></div><div class='card-body'><h5 class='card-title'>" + name + "</h5><div class='progress mb-4 row' style='height:25px;'><div class='progress-bar bg-primary text-left pl-2' role='progressbar' style='width:" + range + "% ; padding:0' aria-valuenow='80' aria-valuemin='0' aria-valuemax='100'></div></div></div></div>");
+                    slider.value = 50;
+                    document.getElementById('skillname').value = '';
+                    counterSkill += 1;
+                } else {
+                    $("#skillnamediv").append("<label id='Skillname-error' class='is-invalid' for='CvTitle'>Please enter a name for your skill</label>");
+                }
+            });
+
+
+            $(document).on('click',
+                '.btn-close.skill',
+                function () {
+                    var id = $(this).closest('.card').attr('id');
+                    var number = id.replace(/\D/g, "");
+                    var deleted = false;
+                    while (!deleted) {
+
+
+                    for (var i = 0; i < vm.SkillList.$values.length; i++) {
+                        if (vm.SkillList.$values[i].Id==number) {
+
+                            delete vm.SkillList.$values[i];
+                            vm.SkillList.$values.splice(i, 1);
+                            deleted = true;
+                        }
+                        }
+                    for (var i = 0; i < exObj.SkillList.length; i++) {
+                        delete exObj.SkillList[i];
+                        exObj.SkillList.splice(i, 1);
+                        deleted = true;
+                    }
+                    }
+
+                    console.log(vm);
+
+                    $(this).closest('.card').remove();
+
+                });
+
+
+            $(document).on('click',
+                '.btn-close.Ex',
+                function () {
+                    var id = $(this).closest('.card').attr('id');
+                    var number = id.replace(/\D/g, "");
+                    var type = id.charAt([2]);
+                    var deleted = false;
+                    if (type == "W") {
+                        while (!deleted) {
+
+                        for (var i = 0; i < vm.WorkExperiences.$values.length; i++) {
+                            if (vm.WorkExperiences.$values[i].Id==number) {
+                                delete vm.WorkExperiences.$values[i];
+                                vm.WorkExperiences.$values.splice(i, 1);
+                                deleted = true;
+                            }
+                            }
+                        for (var i = 0; i < exObj.WorkExperiences.length; i++) {
+
+                             if (exObj.WorkExperiences[i].tempId==number)
+                            {
+                                 delete exObj.WorkExperiences[i];
+                                 exObj.WorkExperiences.splice(i, 1);
+                                 deleted = true;
+
+                            }
+                        }
+
+
+                        }
+                    } else {
+                        while (!deleted) {
+
+                        for (var i = 0; i < vm.Educations.$values.length; i++) {
+                            if (vm.Educations.$values[i].Id==number) {
+                                delete vm.Educations.$values[i];
+
+                                vm.Educations.$values.splice(i, 1);
+
+                                deleted = true;
+                            }
+                        }
+                        for (var i = 0; i < exObj.Educations.length; i++) {
+
+                             if (exObj.Educations[i].tempId==number) {
+                                 delete exObj.Educations[i];
+                                 exObj.Educations.splice(i, 1);
+                                deleted = true;
+                             }
+                        }
+                        }
+
+
+                    }
+                    console.log(vm);
+
+                    $(this).closest('.card').remove();
+
+
+                });
+
+
+            $("#btn-add-experience").click(function (e) {
+                var exStartYear = $("#ExStartYear").val();
+                var exEndYear = $("#ExEndYear").val();
+                var exName = $("#ExName").val();
+                var exLocation = $("#ExLocation").val();
+                var exDesc = $("#ExDesc").val();
+                var NameValidated = false;
+                var LocationValidated = false;
+                var StartYearValidated = false;
+                var EndYearValidated = false;
+                var DescValidated = false;
+
+                var validStartYear = /^\d+$/.test(exStartYear);
+                var validEndYear = /^\d+$/.test(exEndYear);
+                if (exName != "") {
+
+                    NameValidated = true;
+                } else {
+
+                    $("#exNameValidation").append("<label id='Nameerror' class='is-invalid' for='CvTitle'>Please enter a name</label>");
+                }
+                if (exLocation != "") {
+                    LocationValidated = true;
+                } else {
+
+                    $("#exLocationValidation").append("<label id='Locationerror' class='is-invalid' for='CvTitle'>Please enter a location</label>");
+                }
+                if (exDesc != "") {
+                    DescValidated = true;
+                } else {
+                    $("#exDescValidation").append("<label id='Descerror' class='is-invalid' for='CvTitle'>Please enter a Description</label>");
+
+                }
+
+
+
+                if (validStartYear) {
+                    StartYearValidated = true;
+                } else {
+                    $("#Date").append("<label id='StartYearerror' class='is-invalid' for='CvTitle'>Please enter a valid StartYear, only numbers!</label>");
+
+                }
+                if (validEndYear == true || validEndYear == "") {
+                    EndYearValidated = true;
+                } else {
+                    $("#Date").append("<label id='EndYearerror' class='is-invalid' for='CvTitle'>Please enter a valid EndYear, only numbers or leave this blank.!</label>");
+
+                }
+
+                var Experience = $("#Experience :selected").text();
+
+
+                if (NameValidated && LocationValidated && StartYearValidated && EndYearValidated && DescValidated) {
+
+
+                    var ex = {
+                        "tempId":counterExperiences,
+                        "Title": exName,
+                        "WorkPlace": exLocation,
+                        "WorkDescription": exDesc,
+                        "StartYear": exStartYear + "-01-01",
+                        "EndYear": exEndYear + "-01-01"
+
+
+                    }
+
+
+                    if (Experience == "Jobb experience") {
+
+                        exObj.WorkExperiences.push(ex);
+                        $("#AddExperience").append("<div id='ExW" + counterExperiences + "'class='card mt-5'><div class='card-header row' style='--bs-gutter-x:0;'><div class='col'>" + Experience + "</div><div class='col text-end' style='padding-right: 0'><button type='button' class='btn-close Ex' style='padding-right: 0' aria-label='Close'></button></div></div><div class='card-body'><h5 class='card-title'> " + exName + "/" + exLocation + "  " + exStartYear + "-" + exEndYear + "</h5><p class='card-text'>" + exDesc + "</p>  </div></div>");
+
+                    } else {
+                        exObj.Educations.push(ex);
+                        $("#AddExperience").append("<div id='ExE" + counterExperiences + "'class='card mt-5'><div class='card-header row' style='--bs-gutter-x:0;'><div class='col'>" + Experience + "</div><div class='col text-end' style='padding-right: 0'><button type='button' class='btn-close Ex' style='padding-right: 0' aria-label='Close'></button></div></div><div class='card-body'><h5 class='card-title'> " + exName + "/" + exLocation + "  " + exStartYear + "-" + exEndYear + "</h5><p class='card-text'>" + exDesc + "</p>  </div></div>");
+
+
+                    }
+
+
+                    $("#ExName").val("");
+                    $("#ExLocation").val("");
+                    $("#ExDesc").val("");
+                    $("#ExStartYear").val("");
+                    $("#ExEndYear").val("");
+
+                    $("#Nameerror").remove();
+                    $("#Locationerror").remove();
+                    $("#Descerror").remove();
+                    $("#StartYearerror").remove();
+                    $("#EndYearerror").remove();
+
+                    counterExperiences += 1;
+                    console.log(vm);
+                    console.log(exObj.Educations[0]);
+
+                }
+
+
+            });
+            $("form[name = 'cv']").submit(function (e) {
+                e.preventDefault();
+                if ($("form[name = 'cv']").valid()) {
+
+                    var cvTitle = $("#CvTitle").val();
+                    var cvDesc = $("#CVDesc").val();
+                    mergeLists();
+                    addObjects();
+                    console.log(vm);
+
+
+                    var modifiedCv = {
+                        "Date":vm.Date,
+                        "SkillList": [],
+                        "Clicks": vm.Clicks,
+                        "Deactivated": false,
+                        "Educations": [],
+                        "WorkExperiences": [],
+                        "Description": cvDesc,
+                        "Title": cvTitle,
+                        "id": vm.id
+
+
+                    };
+
+                    for (var i = 0; i < vm.WorkExperiences.$values.length; i++) {
+                        modifiedCv.WorkExperiences.push(vm.WorkExperiences.$values[i]);
+                    }
+                    for (var i = 0; i < vm.Educations.$values.length; i++) {
+                        modifiedCv.Educations.push(vm.Educations.$values[i]);
+                    }
+                    for (var i = 0; i < vm.SkillList.$values.length; i++) {
+                        modifiedCv.SkillList.push(vm.SkillList.$values[i]);
+                    }
+
+
+                    console.log(modifiedCv);
+
+                    Object.assign(vm, { "Title": cvTitle, "Description": cvDesc, "Date": "2021-01-02" });
+                    $.ajax({
+                        url: "/Api/Cv?userid=@Model.id",
+                        method: "post",
+                        data: modifiedCv
+                    })
+                        .done(function () {
+                            window.alert("You have succesfully edited the CV.");
+                            window.location.href = "/Profile/Profilesettings";
+
+                        }).fail(function () {
+                            window.alert("Something went wrong please reload the page and try again.");
+
+                            console.log("Failed to Add CV.");
+                        });
+
+
+                }
+            });
+
+            function addObjects() {
+                console.log(exObj.SkillList[0]);
+                for (var i = 0; i < exObj.Educations.length; i++) {
+                    vm.Educations.$values.push(exObj.Educations[i]);
+
+                }
+                for (var i = 0; i < exObj.SkillList.length; i++) {
+                    vm.SkillList.$values.push(exObj.SkillList[i]);
+                }
+                for (var i = 0; i < exObj.WorkExperiences.length; i++) {
+                    vm.WorkExperiences.$values.push(exObj.WorkExperiences[i]);
+                }
+            }
+            function mergeLists() {
+                for (var i = 0; i < exObj.Educations.length; i++) {
+
+                delete exObj.Educations[i]["tempId"];
+                }
+
+                for (var i = 0; i < exObj.WorkExperiences.length; i++) {
+                    delete exObj.WorkExperiences[i]["tempId"];
+                }
+            }
+
+            $("form[name='cv']").validate({
+                errorClass: "is-invalid",
+                rules: {
+                    titlecv: "required",
+                    desccv: "required"
+                },
+                messages: {
+                    titlecv: "Please enter a title",
+                    desccv: "Please enter a description"
+                }
+
+
+            });
+        });
+
+    </script>
+    <script src="/Scripts/jquery.validate.js"></script>
+}
